@@ -1,6 +1,6 @@
 [package]
 name = "philharmonic-connector-impl-embed"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
 rust-version = "1.88"
 license = "Apache-2.0 OR MPL-2.0"
@@ -9,6 +9,25 @@ repository = "https://github.com/metastable-void/philharmonic-connector-impl-emb
 description = "Embedding connector implementation for Philharmonic (embed capability: text in, vector out)."
 
 [dependencies]
+async-trait = "0.1"
+fastembed = { version = "4", default-features = false, features = ["ort-download-binaries"] }
+# default-features = false drops fastembed's `hf-hub-native-tls`
+# (we never fetch models from HF at runtime per Yuka's
+# constraint — the deployment bundles ONNX bytes via the
+# `xtask hf-fetch-embed-model` build-time tool + `include_bytes!`).
+# Re-opt-in to `ort-download-binaries` so the ORT runtime
+# library is bundled at *build* time; otherwise ort ships a
+# stub with a link error prompting the user to set
+# ORT_LIB_LOCATION or enable the feature.
+philharmonic-connector-common = "0.2"
+philharmonic-connector-impl-api = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt", "macros", "time"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time", "test-util"] }
 
 [profile.release]
 opt-level = 3

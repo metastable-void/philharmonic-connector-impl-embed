@@ -9,10 +9,11 @@ this crate adheres to
 
 ## [Unreleased]
 
-Implementation pending. See the
-[Philharmonic workspace ROADMAP](https://github.com/metastable-void/philharmonic-workspace/blob/main/ROADMAP.md)
-for the phase that populates this crate.
+## [0.1.0] - 2026-04-24
 
-## [0.0.0]
+### Added
 
-Name reservation on crates.io. No functional content yet.
+- Implemented the `embed` connector using local fastembed CPU inference.
+- Added `Embed::new_from_bytes(...)` for eager model loading from deployment-provided bytes.
+- Added config/request/response wire types and `Implementation` execution flow with batch/timeout validation.
+- Added env-gated `#[ignore]` integration tests for live inference shape, determinism, semantic sanity, and batch cap enforcement.
