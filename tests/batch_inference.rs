@@ -1,29 +1,18 @@
+#![cfg(all(feature = "bundled-default-model", embed_default_bundle))]
+
 mod common;
 
-use common::{config, context, implementation, maybe_fixture};
-use philharmonic_connector_impl_embed::{EmbedResponse, Implementation};
-use serde_json::json;
-
-#[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires EMBED_TEST_* env vars and local model files"]
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn batch_inference_returns_one_vector_per_text() {
-    let Some(fixture) = maybe_fixture() else {
-        return;
-    };
-
-    let embed = implementation(&fixture);
-    let response = embed
-        .execute(
-            &config(&fixture.model_id, 32),
-            &json!({"texts": ["hello", "hi", "goodbye"]}),
-            &context(),
-        )
+    let embed = common::embed().unwrap();
+    let response = common::execute_texts(&embed, vec!["hello", "bonjour", "goodbye"])
         .await
         .unwrap();
 
-    let response: EmbedResponse = serde_json::from_value(response).unwrap();
     assert_eq!(response.embeddings.len(), 3);
-    for embedding in response.embeddings {
-        assert_eq!(embedding.len(), fixture.dimensions);
+    for embedding in &response.embeddings {
+        assert_eq!(embedding.len(), common::DIMENSIONS);
     }
+    assert_ne!(response.embeddings[0], response.embeddings[1]);
+    assert_ne!(response.embeddings[0], response.embeddings[2]);
 }

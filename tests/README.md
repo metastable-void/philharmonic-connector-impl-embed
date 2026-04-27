@@ -1,31 +1,19 @@
-# Integration Tests
+# Embed Integration Tests
 
-This crate's live-inference integration tests are `#[ignore]` by default.
-They require a local ONNX model file plus tokenizer files and are only run
-when all of the following env vars are set:
+Integration tests are compiled only when the default bundle exists:
+`bundled-default-model` must be enabled and build.rs must emit
+`embed_default_bundle`.
 
-- `EMBED_TEST_ONNX_PATH`
-- `EMBED_TEST_TOKENIZER_DIR`
-- `EMBED_TEST_MODEL_ID`
-- `EMBED_TEST_DIMENSIONS`
-- `EMBED_TEST_MAX_SEQ_LENGTH`
-
-`EMBED_TEST_TOKENIZER_DIR` must contain:
-
-- `tokenizer.json`
-- `tokenizer_config.json`
-- `config.json`
-- `special_tokens_map.json`
-
-Example:
+For routine iteration, use the small multilingual override:
 
 ```sh
-EMBED_TEST_ONNX_PATH=/tmp/embed/model.onnx \
-EMBED_TEST_TOKENIZER_DIR=/tmp/embed \
-EMBED_TEST_MODEL_ID=paraphrase-multilingual-MiniLM-L12-v2 \
-EMBED_TEST_DIMENSIONS=384 \
-EMBED_TEST_MAX_SEQ_LENGTH=512 \
-./scripts/rust-test.sh --ignored philharmonic-connector-impl-embed
+PHILHARMONIC_EMBED_DEFAULT_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 \
+PHILHARMONIC_EMBED_DEFAULT_REVISION=e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
+    ./scripts/pre-landing.sh philharmonic-connector-impl-embed
 ```
 
-The repository does not commit ONNX artifacts.
+The default bge-m3 bundle is cached under
+`$XDG_CACHE_HOME/philharmonic/embed-bundles/` or
+`$HOME/.cache/philharmonic/embed-bundles/`, unless
+`PHILHARMONIC_EMBED_CACHE_DIR` is set. Use
+`--no-default-features` for offline unit-test-only iteration.

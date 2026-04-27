@@ -20,7 +20,7 @@ mod tests {
     fn response_roundtrips_json() {
         let response = EmbedResponse {
             embeddings: vec![vec![0.1_f32, -0.2_f32], vec![0.3_f32, 0.4_f32]],
-            model: "paraphrase-multilingual-MiniLM-L12-v2".to_owned(),
+            model: "model-a".to_owned(),
             dimensions: 2,
         };
 

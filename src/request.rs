@@ -36,9 +36,7 @@ mod tests {
 
     #[test]
     fn deserialize_valid_shape() {
-        let value = json!({
-            "texts": ["hello", "world"]
-        });
+        let value = json!({"texts": ["hello", "world"]});
 
         let request: EmbedRequest = serde_json::from_value(value).unwrap();
         assert_eq!(request.texts, vec!["hello", "world"]);
@@ -46,9 +44,7 @@ mod tests {
 
     #[test]
     fn reject_non_string_text_elements() {
-        let value = json!({
-            "texts": ["hello", 42]
-        });
+        let value = json!({"texts": ["hello", 42]});
 
         let err = serde_json::from_value::<EmbedRequest>(value).unwrap_err();
         assert!(err.to_string().contains("string"));
@@ -67,9 +63,15 @@ mod tests {
 
     #[test]
     fn reject_missing_texts_field() {
-        let value = json!({});
-
-        let err = serde_json::from_value::<EmbedRequest>(value).unwrap_err();
+        let err = serde_json::from_value::<EmbedRequest>(json!({})).unwrap_err();
         assert!(err.to_string().contains("texts"));
+    }
+
+    #[test]
+    fn reject_unknown_field() {
+        let err =
+            serde_json::from_value::<EmbedRequest>(json!({"texts": ["hello"], "extra": true}))
+                .unwrap_err();
+        assert!(err.to_string().contains("unknown field"));
     }
 }

@@ -30,7 +30,7 @@ mod tests {
     #[test]
     fn deserialize_rejects_unknown_fields() {
         let value = json!({
-            "model_id": "paraphrase-multilingual-MiniLM-L12-v2",
+            "model_id": "model-a",
             "max_batch_size": 16,
             "timeout_ms": 5000,
             "extra": true
@@ -42,9 +42,7 @@ mod tests {
 
     #[test]
     fn defaults_for_batch_size_and_timeout_apply() {
-        let value: JsonValue = json!({
-            "model_id": "paraphrase-multilingual-MiniLM-L12-v2"
-        });
+        let value: JsonValue = json!({"model_id": "model-a"});
 
         let config: EmbedConfig = serde_json::from_value(value).unwrap();
         assert_eq!(config.max_batch_size, 32);
@@ -60,5 +58,12 @@ mod tests {
 
         let err = serde_json::from_value::<EmbedConfig>(value).unwrap_err();
         assert!(err.to_string().contains("model_id"));
+    }
+
+    #[test]
+    fn zero_batch_size_is_deserializable_for_execute_validation() {
+        let value = json!({"model_id": "model-a", "max_batch_size": 0});
+        let config: EmbedConfig = serde_json::from_value(value).unwrap();
+        assert_eq!(config.max_batch_size, 0);
     }
 }

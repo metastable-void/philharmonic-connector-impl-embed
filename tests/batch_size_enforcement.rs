@@ -1,24 +1,28 @@
+#![cfg(all(feature = "bundled-default-model", embed_default_bundle))]
+
 mod common;
 
-use common::{config, context, implementation, maybe_fixture};
 use philharmonic_connector_impl_embed::{Implementation, ImplementationError};
 use serde_json::json;
 
-#[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires EMBED_TEST_* env vars and local model files"]
-async fn max_batch_size_rejects_oversized_request() {
-    let Some(fixture) = maybe_fixture() else {
-        return;
-    };
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn batch_size_boundary_passes_and_overrun_fails() {
+    let embed = common::embed().unwrap();
 
-    let embed = implementation(&fixture);
+    let config = json!({
+        "model_id": common::MODEL_ID,
+        "max_batch_size": 2,
+        "timeout_ms": 120_000
+    });
+    let boundary = json!({"texts": ["one", "two"]});
+    embed
+        .execute(&config, &boundary, &common::context())
+        .await
+        .unwrap();
 
+    let overrun = json!({"texts": ["one", "two", "three"]});
     let err = embed
-        .execute(
-            &config(&fixture.model_id, 2),
-            &json!({"texts": ["a", "b", "c"]}),
-            &context(),
-        )
+        .execute(&config, &overrun, &common::context())
         .await
         .unwrap_err();
 

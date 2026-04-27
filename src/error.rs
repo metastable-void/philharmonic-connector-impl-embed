@@ -36,28 +36,24 @@ mod tests {
 
     #[test]
     fn every_internal_variant_maps_to_wire() {
-        let invalid_config = ImplementationError::from(Error::InvalidConfig("cfg".to_owned()));
         assert_eq!(
-            invalid_config,
+            ImplementationError::from(Error::InvalidConfig("cfg".to_owned())),
             ImplementationError::InvalidConfig {
                 detail: "cfg".to_owned(),
             }
         );
-
-        let invalid_request = ImplementationError::from(Error::InvalidRequest("req".to_owned()));
         assert_eq!(
-            invalid_request,
+            ImplementationError::from(Error::InvalidRequest("req".to_owned())),
             ImplementationError::InvalidRequest {
                 detail: "req".to_owned(),
             }
         );
-
-        let timeout = ImplementationError::from(Error::UpstreamTimeout);
-        assert_eq!(timeout, ImplementationError::UpstreamTimeout);
-
-        let internal = ImplementationError::from(Error::Internal("boom".to_owned()));
         assert_eq!(
-            internal,
+            ImplementationError::from(Error::UpstreamTimeout),
+            ImplementationError::UpstreamTimeout
+        );
+        assert_eq!(
+            ImplementationError::from(Error::Internal("boom".to_owned())),
             ImplementationError::Internal {
                 detail: "boom".to_owned(),
             }

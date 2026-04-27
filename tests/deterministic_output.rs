@@ -1,37 +1,17 @@
+#![cfg(all(feature = "bundled-default-model", embed_default_bundle))]
+
 mod common;
 
-use common::{config, context, implementation, maybe_fixture};
-use philharmonic_connector_impl_embed::{EmbedResponse, Implementation};
-use serde_json::json;
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn same_input_is_bit_deterministic() {
+    let embed = common::embed().unwrap();
 
-#[tokio::test(flavor = "multi_thread")]
-#[ignore = "requires EMBED_TEST_* env vars and local model files"]
-async fn same_input_produces_identical_vector() {
-    let Some(fixture) = maybe_fixture() else {
-        return;
-    };
-
-    let embed = implementation(&fixture);
-
-    let first = embed
-        .execute(
-            &config(&fixture.model_id, 32),
-            &json!({"texts": ["determinism check"]}),
-            &context(),
-        )
+    let first = common::execute_texts(&embed, vec!["deterministic text"])
         .await
         .unwrap();
-    let second = embed
-        .execute(
-            &config(&fixture.model_id, 32),
-            &json!({"texts": ["determinism check"]}),
-            &context(),
-        )
+    let second = common::execute_texts(&embed, vec!["deterministic text"])
         .await
         .unwrap();
-
-    let first: EmbedResponse = serde_json::from_value(first).unwrap();
-    let second: EmbedResponse = serde_json::from_value(second).unwrap();
 
     assert_eq!(first.embeddings, second.embeddings);
 }

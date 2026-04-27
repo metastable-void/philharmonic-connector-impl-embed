@@ -2,32 +2,42 @@
 name = "philharmonic-connector-impl-embed"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.88"
+rust-version = "1.89"
 license = "Apache-2.0 OR MPL-2.0"
 readme = "README.md"
 repository = "https://github.com/metastable-void/philharmonic-connector-impl-embed"
 description = "Embedding connector implementation for Philharmonic (embed capability: text in, vector out)."
 
+[features]
+default = ["bundled-default-model"]
+bundled-default-model = []
+
 [dependencies]
 async-trait = "0.1"
-fastembed = { version = "4", default-features = false, features = ["ort-download-binaries"] }
-# default-features = false drops fastembed's `hf-hub-native-tls`
-# (we never fetch models from HF at runtime per Yuka's
-# constraint — the deployment bundles ONNX bytes via the
-# `xtask hf-fetch-embed-model` build-time tool + `include_bytes!`).
-# Re-opt-in to `ort-download-binaries` so the ORT runtime
-# library is bundled at *build* time; otherwise ort ships a
-# stub with a link error prompting the user to set
-# ORT_LIB_LOCATION or enable the feature.
+inline-blob = "0.1"
+ndarray = "0.16"
 philharmonic-connector-common = "0.2"
 philharmonic-connector-impl-api = "0.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
 tokio = { version = "1", features = ["rt", "macros", "time"] }
+tokenizers = { version = "0.22.2", default-features = false, features = ["onig"] }
+tract-onnx = "0.22.1"
+
+[build-dependencies]
+dirs = "6"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+ureq = { version = "3.3", default-features = false, features = ["rustls"] }
 
 [dev-dependencies]
+approx = "0.5"
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time", "test-util"] }
+
+[package.metadata.docs.rs]
+no-default-features = true
 
 [profile.release]
 opt-level = 3
