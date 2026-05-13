@@ -56,6 +56,14 @@ fn main() {
         return;
     }
 
+    // ureq is configured with `rustls-no-provider`, so the
+    // workspace-mandated `aws-lc-rs` rustls `CryptoProvider`
+    // must be installed before any TLS handshake. Silent failure
+    // is fine here — `install_default()` errs only if another
+    // provider is already installed, in which case the existing
+    // one is good enough.
+    let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
+
     if env::var_os("DOCS_RS").is_some() {
         return;
     }
