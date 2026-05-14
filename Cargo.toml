@@ -1,6 +1,6 @@
 [package]
 name = "philharmonic-connector-impl-embed"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.89"
 license = "Apache-2.0 OR MPL-2.0"
@@ -13,29 +13,29 @@ default = ["bundled-default-model"]
 bundled-default-model = []
 
 [dependencies]
-async-trait = "0.1"
+async-trait = { version = "0.1", default-features = false, features = [] }
 inline-blob = "0.1"
-ndarray = "0.16"
+ndarray = { version = "0.16", default-features = false, features = ["std"] }
 philharmonic-connector-common = "0.2"
 philharmonic-connector-impl-api = "0.1"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-thiserror = "2"
-tokio = { version = "1", features = ["rt", "macros", "time"] }
+serde = { version = "1", default-features = false, features = ["derive", "std"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+thiserror = { version = "2", default-features = false, features = ["std"] }
+tokio = { version = "1", default-features = false, features = ["macros", "rt", "time"] }
 tokenizers = { version = "0.22.2", default-features = false, features = ["onig"] }
-tract-onnx = "0.22.1"
+tract-onnx = { version = "0.22.1", default-features = false, features = [] }
 
 [build-dependencies]
-dirs = "6"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-sha2 = "0.10"
+dirs = { version = "6", default-features = false, features = [] }
+serde = { version = "1", default-features = false, features = ["derive", "std"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+sha2 = { version = "0.10", default-features = false, features = ["std"] }
 ureq = { version = "3.3", default-features = false, features = ["rustls-no-provider", "rustls-webpki-roots"] }
 rustls = { version = "0.23", default-features = false, features = ["std", "tls12", "aws_lc_rs"] }
 
 [dev-dependencies]
-approx = "0.5"
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time", "test-util"] }
+approx = { version = "0.5", default-features = false, features = ["std"] }
+tokio = { version = "1", default-features = false, features = ["macros", "rt", "rt-multi-thread", "time"] }
 
 [package.metadata.docs.rs]
 no-default-features = true
