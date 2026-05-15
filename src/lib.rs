@@ -2,7 +2,7 @@
 //!
 //! `embed` implements the shared
 //! [`philharmonic_connector_impl_api::Implementation`] trait with a
-//! pure-Rust inference stack: [`tract-onnx`] loads and runs ONNX
+//! pure-Rust inference stack: the `tract-onnx` crate loads and runs ONNX
 //! sentence-transformer models, [`tokenizers`] parses the single
 //! `tokenizer.json` file, and this crate applies mean pooling plus
 //! L2 normalization for sentence embeddings.

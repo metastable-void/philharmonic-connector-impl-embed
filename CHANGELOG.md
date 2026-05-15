@@ -9,6 +9,17 @@ this crate adheres to
 
 ## [Unreleased]
 
+### Changed
+- Internal: lib-level rustdoc reference to `tract-onnx`
+  rewritten as plain code prose. The previous form
+  ``[`tract-onnx`]`` tried to resolve `tract-onnx` as an
+  intra-doc link, but the package name contains a hyphen
+  while the Rust import is `tract_onnx`; rustdoc emitted
+  a "broken intra-doc link" warning during `pre-landing.sh`
+  runs. The package-name spelling is preserved in prose so
+  the doc text still matches `cargo.toml`. No behaviour or
+  API change.
+
 ## [0.1.1] - 2026-05-14
 
 ### Changed
